@@ -17,12 +17,24 @@ void calculate_general_average(struct students s[],int *counter);
 void delete_student(struct students s[],int *counter);
 void statistique(struct students s[],int *counter);
 void search_for_student(struct students s[],int *counter);
+void sort(struct students s[], int *counter);
 int main()
 {   
     
-    struct students s[100];
+    struct students s[100]= {
+        {1,"chehboun","achraf","12-12-1998",17.22,"informatique"},
+        {2,"lafhaili","younes","11-02-1999",12.02,"medcine"},
+        {3,"bounour","ayoube","01-01-1993",16.23,"economie"},
+        {4,"zahid","mehdi","12-06-2000",16,"Sciences juridiques"},
+        {5,"ait","salah","12-12-1995",10,"Physique et chimie"},
+        {6,"zaanan","oussama","03-12-1998",13.99,"informatique"},
+        {7,"mohtadi","hiba","11-02-1999",8.02,"informatique"},
+        {8,"ennouri","chaimae","01-01-1993",18.2,"economie"},
+        {9,"choumani","amine","12-06-2000",16,"Sciences juridiques"},
+        {10,"lwafi","noure zddine","12-12-1995",11,"Physique et chimie"},
+        };
     int choice = -1;
-    int counter = 0;
+    int counter = 10;
     while(choice != 0)
     {
         display_menu();
@@ -53,6 +65,9 @@ int main()
             break;
             case 7:
                 search_for_student(s,&counter);
+            break;
+            case 8:
+                sort(s,&counter);
             break;
         }
     }
@@ -85,25 +100,16 @@ void display_menu()
 void add_student(struct students s[],int *counter )
 {  
         int dep_id;
-        int temp_id;
-        int id_exists;
-        while (1) {
-        id_exists = 0; 
+        
         printf("## Veuillez entrer le numero unique de l'etudiant : ");
-        scanf("%d", &temp_id);
-        for (int i = 0; i < *counter; i++) {
-            if (s[i].id == temp_id) {
-                id_exists = 1; 
+        scanf("%d",&s[*counter].id );
+        for(int i = 0;i <*counter ; i++){
+            while(s[i].id == s[*counter].id){
+                printf("entrer un nv num : ");
+                scanf("%d",&s[*counter].id );
+                while (getchar() != '\n');
                 break;
             }
-        }
-        if (id_exists) {
-            printf("Ce numero unique existe deja, veuillez entrer un autre numero.\n");
-        } else {
-            s[*counter].id = temp_id;
-            (*counter)++; 
-            break; 
-        }
         }
         buffer();
         printf("## Veuillez entrer le nom de l'etudiant : ");
@@ -125,7 +131,7 @@ void add_student(struct students s[],int *counter )
         printf("| 4 - economie                |\n");
         printf("| 5 - Sciences juridiques     |\n");
         printf("-------------------------------\n");
-        printf("\nEntrez le numéro de spécialité à laquelle vous appartenez : \n");
+        printf("\nEntrez le numero de specialite e laquelle vous appartenez : \n");
         scanf("%d" , &dep_id);
         buffer();
         switch (dep_id)
@@ -214,33 +220,50 @@ void calculate_general_average(struct students s[],int *counter)
 }
 void delete_student(struct students s[],int *counter){
         int id_to_delete;
+        int found = 0;
         printf("\n-----------------------------------------------\n");
-        printf("|         Supprimer les données des étudiant    |\n");
+        printf("|         Supprimer les donnees des etudiant    |\n");
         printf("\n-----------------------------------------------\n");
-            if(*counter == 0 ){
-                printf("\nIl n'y a aucun etudiant actuellement, veuillez d'abord saisir les informations sur l'etudiant.\n");
-            }else{
-                printf("\nVoici une liste de tous les etudiants inscrits chez nous : \n");
-                for (int i = 0 ; i < *counter ; i++){
-                    printf("\n--------------------------------------------------------------------------\n");
-                    printf("\n| le numero unique : %d \t|| le nom : %s\t||  le prenom : %s\t||\n", i, s[i].nom , s[i].prenom);
-                }
-                printf("entrer un numero unique pour supprimer un etudiant : ");
-                scanf("%d" , &id_to_delete );
-                for(int i = 0 ; i < *counter ; i++){
-                    if(s[i].id == id_to_delete){
-                        for(int i = 0 ; i < *counter - 1 ; i++){
-                           s[i] = s[i+1];
-                        }
-                    }
-                    (*counter)--;
-                    printf("\n Ceci est la nouvelle liste aprثs votre suppression");
-                    for( int i = 0 ; i < *counter ; i++ ){
-                        printf("\n-----------------------------------------------------------------------------------------------------------------------------------\n");
-                        printf("\n| le numero unique : %d || le nom : %s || le prenom : %s || la date de naissance : %s || le moyenne generale : %.2f || departement : %s |\n",s[i].id, s[i].nom,s[i].prenom , s[i].ddn,s[i].note_general,s[i].departement);
-                    }
-                }
-}
+    if (*counter == 0) {
+        printf("\nIl n'y a aucun etudiant actuellement, veuillez d'abord saisir les informations sur l'etudiant.\n");
+        return;
+    }
+
+    printf("\nVoici une liste de tous les etudiants inscrits chez nous : \n");
+    for (int i = 0; i < *counter; i++) {
+        printf("\n--------------------------------------------------------------------------\n");
+        printf("\n| ID : %d \t|| Nom : %s\t|| Prenom : %s\t||\n", s[i].id, s[i].nom, s[i].prenom);
+    }
+
+    printf("Entrez l'ID de l'etudiant e supprimer : ");
+    if (scanf("%d", &id_to_delete) != 1) {
+        printf("\nID invalide. Veuillez entrer un nombre entier.\n");
+        while (getchar() != '\n');  // Clear the input buffer
+        return;
+    }
+    getchar();  // Clear the newline character
+
+   
+    for (int i = 0; i < *counter; i++) {
+        if (s[i].id == id_to_delete) {
+            for (int j = i; j < *counter - 1; j++) {
+                s[j] = s[j + 1];
+            }
+            (*counter)--;  // Decrement the student counter
+            found = 1;
+            break;
+        }
+    }
+
+    if (found) {
+        printf("\nCeci est la nouvelle liste apres votre suppression :\n");
+        for (int i = 0; i < *counter; i++) {
+            printf("\n-----------------------------------------------------------------------------------------------------------------------------------\n");
+            printf("| ID : %d || Nom : %s || PrEenom : %s || Date de naissance : %s || Note generale : %.2f || Departement : %s |\n", s[i].id, s[i].nom, s[i].prenom, s[i].ddn, s[i].note_general, s[i].departement);
+        }
+    } else {
+        printf("\nAucun etudiant avec l'ID %d n'a ete trouve.\n", id_to_delete);
+    }
 }
 void statistique(struct students s[],int *counter)
 {
@@ -256,18 +279,18 @@ void statistique(struct students s[],int *counter)
     printf("|                 statistique                   |\n");
     printf("\n-----------------------------------------------\n");
     printf("------------------------------------------------------------------------------------------\n");
-    printf("| 1 - Afficher le nombre total d'étudiants inscrits.                                      |\n");
-    printf("| 2 - Afficher le nombre d'étudiants dans chaque département                              |\n");
-    printf("| 3 - Afficher les étudiants ayant une moyenne générale supérieure à un certain seuil     |\n");
-    printf("| 4 - Afficher les 3 étudiants ayant les meilleures notes.                                |\n");
-    printf("| 5 - Afficher le nombre d'étudiants ayant réussi dans chaque département                 |\n");
+    printf("| 1 - Afficher le nombre total d'etudiants inscrits.                                      |\n");
+    printf("| 2 - Afficher le nombre d'etudiants dans chaque departement                              |\n");
+    printf("| 3 - Afficher les etudiants ayant une moyenne generale superieure e un certain seuil     |\n");
+    printf("| 4 - Afficher les 3 etudiants ayant les meilleures notes.                                |\n");
+    printf("| 5 - Afficher le nombre d'etudiants ayant reussi dans chaque departement                 |\n");
     printf("------------------------------------------------------------------------------------------\n");
     printf("\n----> ");
     scanf("%d", &st_choice);
     switch (st_choice)
     {
     case 1:
-        printf("Le nombre d'étudiants inscrits est : %d " , *counter);
+        printf("Le nombre d'etudiants inscrits est : %d " , *counter);
         break;
     case 2:
         printf("Quelle departement.");
@@ -513,8 +536,7 @@ void search_for_student(struct students s[],int *counter){
             if(strcmp(s[i].nom , name_to_look) == 0 ){
                 printf("\n-----------------------------------------------------------------------------------------------------------------------------------\n");
                 printf("\n| le numero unique : %d || le nom : %s || le prenom : %s || la date de naissance : %s || le moyenne generale : %.2f || departement : %s |\n",s[i].id, s[i].nom,s[i].prenom , s[i].ddn,s[i].note_general,s[i].departement);
-            }else{
-                printf("\n Il n'y aucun élève portant ce nom, veuillez essayer un autre nom\n");
+                return;
             }
         }
     }
@@ -535,14 +557,54 @@ void search_for_student(struct students s[],int *counter){
             if(s[i].id == id_to_search ){
                 printf("\n-----------------------------------------------------------------------------------------------------------------------------------\n");
                 printf("\n| le numero unique : %d || le nom : %s || le prenom : %s || la date de naissance : %s || le moyenne generale : %.2f || departement : %s |\n",s[i].id, s[i].nom,s[i].prenom , s[i].ddn,s[i].note_general,s[i].departement);
-            }else{
-                printf("\n Il n'y aucun élève portant ce nom, veuillez essayer un autre nom\n");
+                return;
             }
         }
        }
     break;
-    
     default:
+        break;
+    }
+}
+void sort(struct students s[], int *counter){
+    int sub_menu;
+    printf("\n-----------------------------------------------\n");
+    printf("|             Classement des etudiants          |\n");
+    printf("\n-----------------------------------------------\n");
+    printf("\n 1 - Trier les eleves de A a Z. \n 2 - Trier les eleves de Z a A. \n 3 - Tri des etudiants par moyenne generale \n 4 - Tri des etudiants selon leur statut de reussite");
+    printf("----> ");
+    scanf("%d" ,&sub_menu);
+    buffer();
+    switch(sub_menu){
+        case 1:
+            for(int i = 0; i < *counter - 1; i++) {
+                for (int j = 0; j < *counter - 1; j++) {
+                    if (strcmp(s[j].nom, s[j + 1].nom) > 0) {
+                        struct students temp = s[j];
+                        s[j] = s[j + 1];
+                        s[j + 1] = temp;
+                    }
+                }
+            }
+            for (int i = 0; i < *counter; i++) {
+                printf("\n-----------------------------------------------------------------------------------------------------------------------------------\n");
+                printf("\n| le numero unique : %d || le nom : %s || le prenom : %s || la date de naissance : %s || le moyenne generale : %.2f || departement : %s |\n", s[i].id, s[i].nom, s[i].prenom, s[i].ddn, s[i].note_general, s[i].departement);
+            }
+        break;
+        case 2:
+            for(int i = 0; i < *counter - 1; i++) {
+                for (int j = 0; j < *counter - 1; j++) {
+                    if (strcmp(s[j].nom, s[j + 1].nom) < 0) {
+                        struct students temp = s[j];
+                        s[j] = s[j + 1];
+                        s[j + 1] = temp;
+                    }
+                }
+            }
+            for (int i = 0; i < *counter; i++) {
+                printf("\n-----------------------------------------------------------------------------------------------------------------------------------\n");
+                printf("\n| le numero unique : %d || le nom : %s || le prenom : %s || la date de naissance : %s || le moyenne generale : %.2f || departement : %s |\n", s[i].id, s[i].nom, s[i].prenom, s[i].ddn, s[i].note_general, s[i].departement);
+            }
         break;
     }
 
