@@ -170,11 +170,11 @@ void show_students(struct students s[],int *counter)
     printf("||   Ceci est une liste de tous nos etudiants inscrits   ||\n");
     printf("----------------------------------------------------------\n");
         if (*counter == 0) {
-        printf("\nIl n'y a aucun étudiant actuellement, veuillez d'abord saisir les informations sur l'étudiant.\n");
+        printf("\nIl n'y a aucun etudiant actuellement, veuillez d'abord saisir les informations sur l'etudiant.\n");
     } else {
         for (int i = 0; i < *counter; i++) {
             printf("\n-----------------------------------------------------------------------------------------------------------------------------------\n");
-            printf("| Numéro unique : %d || Nom : %s || Prénom : %s || Date de naissance : %s || Moyenne générale : %.2f || Département : %s |\n",
+            printf("| numero unique : %d || nom : %s || prenom : %s || date de naissance : %s || moyenne generale : %.2f || departement : %s |\n",
                    s[i].id, s[i].nom, s[i].prenom, s[i].ddn, s[i].note_general, s[i].departement);
         }
     }
